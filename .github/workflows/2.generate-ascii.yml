@@ -9,26 +9,21 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v4
-    - name: Install Cowsay Program
-      run: sudo apt-get install cowsay -y
 
-    - name: Execute Cowsay CMD
-      run: cowsay -f dragon "Run for cover, I am a DRAGON....RAWR" >> dragon.txt
+    - name: List
+      run: ls
+
+    - name: Execute Cowsay From script
+      run: |
+        chmod +x ascii.sh
+        ./ascii.sh
     
     # - name: Upload Dragon text file
     #   uses: actions/upload-artifact@v3
     #   with:
     #     name: dragon-text-file
     #     path: dragon.txt
-    - name: Test File Exists
-      run: grep -i "dragon" dragon.txt
-
-    - name: List and Read files
-      run: |
-        echo "My first Github actions"
-        ls -ltra
-        cat README.md
-        cat dragon.txt
+    
 
     
  
