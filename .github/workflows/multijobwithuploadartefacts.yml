@@ -1,0 +1,57 @@
+name: Multiple Jobs with needs and Upload Artefacts
+
+on:  
+  push
+
+jobs:
+  ascii_job:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+
+    - name: List
+      run: ls
+
+    - name: Execute Cowsay From script
+      run: |
+        chmod +x ascii.sh
+        ./ascii.sh
+    
+    - name: Upload Dragon text file
+      uses: actions/upload-artifact@v3
+      with:
+        name: dragon-text-file
+        path: dragon.txt
+    
+
+    
+ 
+  test_job_2:
+    needs: ascii_job
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Dragon text file
+      uses: actions/download-artifact@v3
+      with:
+        name: dragon-text-file
+
+    - name: Check if file exists
+      run: grep -i "dragon" dragon.txt
+      
+    
+
+  deploy_job_3:
+    needs: [test_job_2]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download Dragon text file
+      uses: actions/download-artifact@v3
+      with:
+        name: dragon-text-file
+        
+    - name: Read File
+      run: cat dragon.txt
+       
+    - name: Deploy
+      run: echo Deploying ... .. .
