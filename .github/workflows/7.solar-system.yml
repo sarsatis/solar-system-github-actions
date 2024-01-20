@@ -61,13 +61,13 @@ jobs:
 
     code-coverage:
         name: Code Coverage
-        # container: 
-        #     image: node:18
-        # services:
-        #   mongo-db:
-        #     image: siddharth67/mongo-db:non-prod
-        #     options: 
-        #         --name mongo
+        container: 
+            image: node:18
+        services:
+          mongo-db:
+            image: siddharth67/mongo-db:non-prod
+            options: 
+                --name mongo
         env:
             MONGO_URI: 'mongodb://mongo:27017/superData'
             MONGO_USERNAME: non-prod-user
@@ -197,7 +197,7 @@ jobs:
             push: true
             tags: |
                 ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
-                ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}
+             #  ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}
 
     # dev-deploy:
     #   if: contains(github.ref, 'feature/')
