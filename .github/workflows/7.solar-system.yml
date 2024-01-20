@@ -207,6 +207,9 @@ jobs:
       if: contains(github.ref, 'feature/')
       needs: docker
       runs-on: ubuntu-latest
+      environment: 
+        name: development
+        url: ${{ steps.set-ingress-host-address.outputs.APP_INGRESS_HOST }}
       outputs:
         APP_INGRESS_URL: ${{ steps.set-ingress-host-address.outputs.APP_INGRESS_HOST }}
       services:
@@ -306,31 +309,31 @@ jobs:
               
             #   curl https://$URL/live -s -k | jq -r .status | grep -i live
 
-    # prod-deploy:
-    #   if: github.ref == 'refs/heads/main'
-    #   needs: docker
-    #   uses: ./.github/workflows/reuse-deployment.yml 
-    #   secrets: 
-    #     k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
-    #     mongodb-password: ${{ secrets.MONGO_PASSWORD}}
-    #   with:
-    #     mongodb-uri: ${{ vars.MONGO_URI }}
-    #     environment: production
-    #     k8s-manifest-dir: kubernetes/production/
+    prod-deploy:
+      if: github.ref == 'refs/heads/main'
+      needs: docker
+      uses: ./.github/workflows/8.reuse-deployment.yml
+      secrets: 
+        k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
+        mongodb-password: ${{ secrets.MONGO_PASSWORD}}
+      with:
+        mongodb-uri: ${{ vars.MONGO_URI }}
+        environment: development
+        k8s-manifest-dir: kubernetes/production/
       
-    # prod-integration-testing:
-    #     name: Prod Integration Testing
-    #     if: github.ref == 'refs/heads/main'
-    #     needs: prod-deploy
-    #     runs-on: ubuntu-latest
-    #     steps:
-    #       - name: Test URL Output using CURL and JQ
-    #         env:
-    #           URL: ${{ needs.prod-deploy.outputs.application-url }}
-    #         run: |
-    #           echo $URL
-    #           echo "--------------------------------------------"
-    #           curl https://$URL/live -s -k | jq -r .status | grep -i live
+    prod-integration-testing:
+        name: Prod Integration Testing
+        if: github.ref == 'refs/heads/main'
+        needs: prod-deploy
+        runs-on: ubuntu-latest
+        steps:
+          - name: Test URL Output using CURL and JQ
+            env:
+              URL: ${{ needs.prod-deploy.outputs.application-url }}
+            run: |
+              echo $URL
+              echo "--------------------------------------------"
+              curl https://$URL/live -s -k | jq -r .status | grep -i live
 
     # slack-notification:
     #   if: always()
