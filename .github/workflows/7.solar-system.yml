@@ -61,6 +61,10 @@ jobs:
 
     code-coverage:
         name: Code Coverage
+        # Below is configuration of job container and service container... 
+        # Since we have used container image as node:18 we dont need a additional step to actions/setup-node@v3
+        # In this 2 containers are spun up container to container comm happens with label i.e --name
+        
         container: 
             image: node:18
         services:
@@ -77,10 +81,10 @@ jobs:
         - name: Checkout Repository
           uses: actions/checkout@v4
 
-        - name: Setup NodeJS Version - 18
-          uses: actions/setup-node@v3
-          with:
-            node-version: 18
+        # - name: Setup NodeJS Version - 18
+        #   uses: actions/setup-node@v3
+        #   with:
+        #     node-version: 18
 
         # - name: Composite Action - Cache & Install NPM Packages
         #   uses: ./.github/custom-actions/npm-action
