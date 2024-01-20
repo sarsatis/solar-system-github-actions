@@ -21,6 +21,7 @@ on:
             default: dev
             required: true
             type: string
+      # To send something to caller
       outputs:
         application-url:
            value: ${{ jobs.reuse-deploy.outputs.APP_INGRESS_URL  }} 
