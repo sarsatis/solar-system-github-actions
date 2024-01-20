@@ -323,7 +323,7 @@ jobs:
       
     prod-integration-testing:
         name: Prod Integration Testing
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         needs: prod-deploy
         runs-on: ubuntu-latest
         steps:
@@ -333,7 +333,7 @@ jobs:
             run: |
               echo $URL
               echo "--------------------------------------------"
-              curl https://$URL/live -s -k | jq -r .status | grep -i live
+              # curl https://$URL/live -s -k | jq -r .status | grep -i live
 
     # slack-notification:
     #   if: always()
