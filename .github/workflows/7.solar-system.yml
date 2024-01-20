@@ -7,10 +7,10 @@ on:
       - main
       - 'feature/*'
 
-# env:
-#     MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
-#     MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}
-#     MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}     
+env:
+    MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
+    MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}
+    MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}     
 
 jobs:
     unit-testing:
@@ -106,7 +106,7 @@ jobs:
             name: Code-Coverage-Result
             path: coverage
             retention-days: 5
-            
+
 
     # reports-s3:
     #   needs: [code-coverage, unit-testing]
@@ -144,60 +144,60 @@ jobs:
     #         SOURCE_DIR: 'reports-${{ github.sha }}'
     #         DEST_DIR: 'reports-${{ github.sha }}'
 
-    # docker:
-    #     name: Containerization
-    #     needs: [unit-testing, code-coverage]
-    #     permissions: 
-    #        packages: write
-    #     runs-on: ubuntu-latest
-    #     steps:
-    #     - name: Checkout Repo
-    #       uses: actions/checkout@v4
+    docker:
+        name: Containerization
+        needs: [unit-testing, code-coverage]
+        permissions: 
+           packages: write
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout Repo
+          uses: actions/checkout@v4
 
-    #     - name: Dockerhub Login
-    #       uses: docker/login-action@v2.2.0
-    #       with:
-    #         username: ${{ vars.DOCKERHUB_USERNAME }}
-    #         password: ${{ secrets.DOCKERHUB_PASSWORD }}
+        - name: Dockerhub Login
+          uses: docker/login-action@v2.2.0
+          with:
+            username: ${{ vars.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    #     - name: GHCR Login
-    #       uses: docker/login-action@v2.2.0
-    #       with:
-    #         registry: ghcr.io
-    #         username: ${{ github.repository_owner }}
-    #         password: ${{ secrets.GITHUB_TOKEN }}
+        - name: GHCR Login
+          uses: docker/login-action@v2.2.0
+          with:
+            registry: ghcr.io
+            username: ${{ github.repository_owner }}
+            password: ${{ secrets.GITHUB_TOKEN }}
 
-    #     - name: Docker Build For Testing
-    #       uses: docker/build-push-action@v4
-    #       with:
-    #         context: .
-    #         push: false
-    #         tags: ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
+        - name: Docker Build For Testing
+          uses: docker/build-push-action@v4
+          with:
+            context: .
+            push: false
+            tags: ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
 
-    #     - name: Docker Image Testing
-    #       run: |
-    #         docker images
-    #         docker run --name solar-system-app -d  \
-    #             -p 3000:3000 \
-    #             -e MONGO_URI=$MONGO_URI \
-    #             -e MONGO_USERNAME=$MONGO_USERNAME \
-    #             -e MONGO_PASSWORD=$MONGO_PASSWORD \
-    #             ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
+        - name: Docker Image Testing
+          run: |
+            docker images
+            docker run --name solar-system-app -d  \
+                -p 3000:3000 \
+                -e MONGO_URI=$MONGO_URI \
+                -e MONGO_USERNAME=$MONGO_USERNAME \
+                -e MONGO_PASSWORD=$MONGO_PASSWORD \
+                ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
             
-    #         export IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solar-system-app)
-    #         echo $IP
+            export IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solar-system-app)
+            echo $IP
             
-    #         echo Testing Image URL using wget 
-    #         wget -q -O - 127.0.0.1:3000/live | grep live
+            echo Testing Image URL using wget 
+            wget -q -O - 127.0.0.1:3000/live | grep live
 
-    #     - name: Container Registry Push
-    #       uses: docker/build-push-action@v4
-    #       with:
-    #         context: .
-    #         push: true
-    #         tags: |
-    #             ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
-    #          #  ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}
+        - name: Container Registry Push
+          uses: docker/build-push-action@v4
+          with:
+            context: .
+            push: true
+            tags: |
+                ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
+             #  ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}
 
     # dev-deploy:
     #   if: contains(github.ref, 'feature/')
