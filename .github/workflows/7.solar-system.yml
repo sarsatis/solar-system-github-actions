@@ -39,6 +39,9 @@ jobs:
         #   with:
         #     path-of-folder: node_modules 
 
+        - name: Install Dependencies
+          run: npm install
+
         - name: Unit Testing
           id: nodejs-unit-testing-step
           run: npm test
