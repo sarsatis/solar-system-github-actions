@@ -71,8 +71,10 @@ jobs:
                 tokenSuffix: '_}_'
                 files: '["${{ inputs.k8s-manifest-dir }}*.yaml"]'
               env:
-                NAMESPACE: ${{ vars.NAMESPACE }}
-                REPLICAS: ${{ vars.REPLICAS }}
+                # NAMESPACE: ${{ vars.NAMESPACE }}
+                # REPLICAS: ${{ vars.REPLICAS }}
+                NAMESPACE: default
+                REPLICAS: 1
                 IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
                 INGRESS_IP:  ${{ env.INGRESS_IP }}
 

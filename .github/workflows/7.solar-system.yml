@@ -316,6 +316,7 @@ jobs:
       secrets: 
         k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
         mongodb-password: ${{ secrets.MONGO_PASSWORD}}
+      # To pass env it can only be passed using vars in repository while using resuable workflow
       with:
         mongodb-uri: ${{ vars.MONGO_URI }}
         environment: development
