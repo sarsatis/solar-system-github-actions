@@ -39,6 +39,12 @@ jobs:
         #   with:
         #     path-of-folder: node_modules 
 
+        - name: Cache NPM dependencies
+          uses: actions/cache@v3
+          with:
+           path: node_modules
+           key: ubuntu-latest-node-modules-${{ hashFiles('package-lock.json') }}  
+
         - name: Install Dependencies
           run: npm install
 
@@ -80,6 +86,12 @@ jobs:
         #   uses: ./.github/custom-actions/npm-action
         #   with:
         #     path-of-folder: node_modules
+
+        - name: Cache NPM dependencies
+          uses: actions/cache@v3
+          with:
+           path: node_modules
+           key: ubuntu-latest-node-modules-${{ hashFiles('package-lock.json') }}
 
         - name: Install Dependencies
           run: npm install
