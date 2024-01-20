@@ -207,12 +207,17 @@ jobs:
       if: contains(github.ref, 'feature/')
       needs: docker
       runs-on: ubuntu-latest
+      services:
+        mongo-db:
+          image: siddharth67/mongo-db:non-prod
+          ports:
+            - 27017:27017
       env:
         NAMESPACE: default
         REPLICAS: 1
         IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
         # INGRESS_IP:  ${{ env.INGRESS_IP }}
-        MONGO_URI: 'mongodb://mongo:27017/superData'
+        MONGO_URI: 'mongodb://localhost:27017/superData'
         MONGO_USERNAME: non-prod-user
         MONGO_PASSWORD: non-prod-password
       steps:
