@@ -229,6 +229,7 @@ jobs:
             kubectl get nodes
             kubectl get ns
             kubectl get po
+            
     #   uses: ./.github/workflows/8.reuse-deployment.yml
     #   secrets: 
     #     k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
