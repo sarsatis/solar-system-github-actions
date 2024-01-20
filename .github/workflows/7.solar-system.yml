@@ -64,7 +64,7 @@ jobs:
         # Below is configuration of job container and service container... 
         # Since we have used container image as node:18 we dont need a additional step to actions/setup-node@v3
         # In this 2 containers are spun up container to container comm happens with label i.e --name
-        
+
         container: 
             image: node:18
         services:
@@ -203,10 +203,33 @@ jobs:
                 ${{ vars.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
              #  ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}
 
-    # dev-deploy:
-    #   if: contains(github.ref, 'feature/')
-    #   needs: docker
-    #   uses: ./.github/workflows/reuse-deployment.yml
+    dev-deploy:
+      if: contains(github.ref, 'feature/')
+      needs: docker
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout Repo
+          uses: actions/checkout@v4
+        
+        - name: Install kubectl CLI
+          uses: azure/setup-kubectl@v3
+          with:
+             version: 'v1.26.0'
+
+        - name: Set Kubeconfig file
+          uses: azure/k8s-set-context@v3
+          with:
+            method: kubeconfig
+            kubeconfig: ${{ secrets.KUBECONFIG }}
+
+        - name: Fetch Kubernetes Cluster Details
+          run: |
+            kubectl version --short
+            echo ---------------------------------------------------
+            kubectl get nodes
+            kubectl get ns
+            kubectl get po
+    #   uses: ./.github/workflows/8.reuse-deployment.yml
     #   secrets: 
     #     k8s-kubeconfig: ${{ secrets.KUBECONFIG }}
     #     mongodb-password: ${{ secrets.MONGO_PASSWORD}}
