@@ -89,7 +89,7 @@ jobs:
         # We have defined cache and npm install in composite actions
         # so we can comment it from here
         - name: Composite Action - Cache & Install NPM Packages
-          uses: ./.github/custom-actions/npm-action
+          uses: ./.github/custom-action/npm-action
           with:
             path-of-folder: node_modules
 
