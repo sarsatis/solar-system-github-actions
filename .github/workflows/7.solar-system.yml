@@ -86,19 +86,21 @@ jobs:
         #   with:
         #     node-version: 18
 
-        # - name: Composite Action - Cache & Install NPM Packages
-        #   uses: ./.github/custom-actions/npm-action
-        #   with:
-        #     path-of-folder: node_modules
-
-        - name: Cache NPM dependencies
-          uses: actions/cache@v3
+        # We have defined cache and npm install in composite actions
+        # so we can comment it from here
+        - name: Composite Action - Cache & Install NPM Packages
+          uses: ./.github/custom-actions/npm-action
           with:
-           path: node_modules
-           key: ubuntu-latest-node-modules-${{ hashFiles('package-lock.json') }}
+            path-of-folder: node_modules
 
-        - name: Install Dependencies
-          run: npm install
+        # - name: Cache NPM dependencies
+        #   uses: actions/cache@v3
+        #   with:
+        #    path: node_modules
+        #    key: ubuntu-latest-node-modules-${{ hashFiles('package-lock.json') }}
+
+        # - name: Install Dependencies
+        #   run: npm install
 
         - name: Check Code Coverage
           continue-on-error: true
@@ -321,7 +323,7 @@ jobs:
         mongodb-uri: ${{ vars.MONGO_URI }}
         environment: development
         k8s-manifest-dir: kubernetes/production/
-        
+
       
     prod-integration-testing:
         name: Prod Integration Testing
